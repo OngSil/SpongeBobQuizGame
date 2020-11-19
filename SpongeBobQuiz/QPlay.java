@@ -311,6 +311,7 @@ class QPlay extends JFrame implements ActionListener {
 
 			textField.addKeyListener(speak);
 			ready.addActionListener(speak);
+			exit.addActionListener(speak);
 		}catch(UnknownHostException uhe){
 			JOptionPane.showMessageDialog(null, "호스트 어딨음?", "에러ㄷㄷ", JOptionPane.WARNING_MESSAGE);
 		}catch(IOException ie){
@@ -344,10 +345,10 @@ class QPlay extends JFrame implements ActionListener {
 						String em = msg.substring(6);
 						Thread Exam2 = new Exam2(em);
 						Exam2.start();
-					} else if(msg.startsWith("//Exit")){ //나간 클라이언트 체크
-						exitClient = msg.substring(6);
+					} else if(msg.startsWith("//ExitClient")){ //나간 클라이언트 체크
+						exitClient = msg.substring(12);
 						deleteClientList(exitClient);
-						System.out.println("exitClient: "+msg);
+						System.out.println("exitClient: "+exitClient);
 					} else if(msg.startsWith("//Score")){
 						String msg3 = msg.substring(7);
 						String listSize = msg3.substring(0, msg3.indexOf("/")); //-> 0~1/
@@ -396,7 +397,7 @@ class QPlay extends JFrame implements ActionListener {
 							user1.setText("점수: "+score);
 							user2.setText("점수: "+score2);
 							user3.setText("점수: "+score3);
-							user3.setText("점수: "+score4);
+							user4.setText("점수: "+score4);
 						}
 						
 					
@@ -472,72 +473,31 @@ class QPlay extends JFrame implements ActionListener {
 					System.out.println("나간사람 index: "+realClientlist.get(key));
 					if(realClientlist.get(key) == 0){
 						deleteCharacter1 = new ImageIcon("imgs/(this)game_s_empty.png");
+						id1.setText("");
+						user1.setText("");
 						deleteCharacter1.getImage().flush();
 						sp.setIcon(deleteCharacter1);
 					}else if(realClientlist.get(key) == 1){
 						deleteCharacter2 = new ImageIcon("imgs/(this)game_b_empty.png");
+						id2.setText("");
+						user2.setText("");
 						deleteCharacter2.getImage().flush();
 						dd.setIcon(deleteCharacter2);
 					}else if(realClientlist.get(key) == 2){
 						deleteCharacter3 = new ImageIcon("imgs/(this)game_d_empty.png");
+						id3.setText("");
+						user3.setText("");
 						deleteCharacter3.getImage().flush();
 						da.setIcon(deleteCharacter3);
 					}else if(realClientlist.get(key) == 3){
-						deleteCharacter4 = new ImageIcon("imgs/(this)game_o_empty.png");
+						deleteCharacter4 = new ImageIcon("imgs/(this)game_o_empty2.png");
+						id4.setText("");
+						user4.setText("");
 						deleteCharacter4.getImage().flush();
 						jj.setIcon(deleteCharacter4);
 					}
 				} 
 			}
-			/*for (Entry<Integer, String> entry : realClientlist.entrySet()) {
-				//System.out.println("[Key]:" + entry.getKey() + " [Value]:" + entry.getValue());
-				if(entry.getValue().equals(outClient)){
-					
-				}
-			}*/
-			/*	
-			if(Integer.parseInt(playerIdx) == 0){ //1번째 접속자
-			//	deleteCharacter = new ImageIcon("imgs/(this)game_s_empty.png");
-			//	deleteCharacter.getImage().flush();
-			//	sp.setIcon(deleteCharacter);
-				
-				deleteCharacter2 = new ImageIcon("imgs/(this)game_b_empty.png");
-				deleteCharacter2.getImage().flush();
-				dd.setIcon(deleteCharacter2);
-
-				deleteCharacter3 = new ImageIcon("imgs/(this)game_d_empty.png");
-				deleteCharacter3.getImage().flush();
-				da.setIcon(deleteCharacter3);
-
-				deleteCharacter4 = new ImageIcon("imgs/(this)game_o_empty2.png");
-				deleteCharacter4.getImage().flush();
-				jj.setIcon(deleteCharacter4);
-			}else if(Integer.parseInt(playerIdx) == 1){
-			//	deleteCharacter = new ImageIcon("imgs/(this)game_b_empty.png");
-			//	deleteCharacter.getImage().flush();
-			//	dd.setIcon(deleteCharacter);
-
-				deleteCharacter3 = new ImageIcon("imgs/(this)game_d_empty.png");
-				deleteCharacter3.getImage().flush();
-				da.setIcon(deleteCharacter3);
-
-				deleteCharacter4 = new ImageIcon("imgs/(this)game_o_empty2.png");
-				deleteCharacter4.getImage().flush();
-				jj.setIcon(deleteCharacter4);
-			}else if(Integer.parseInt(playerIdx) == 2){
-			//	deleteCharacter = new ImageIcon("imgs/(this)game_d_empty.png");
-			//	deleteCharacter.getImage().flush();
-			//	da.setIcon(deleteCharacter);
-
-				deleteCharacter4 = new ImageIcon("imgs/(this)game_o_empty2.png");
-				deleteCharacter4.getImage().flush();
-				jj.setIcon(deleteCharacter4);
-			}//else if(Integer.parseInt(playerIdx) == 3){
-			//	deleteCharacter = new ImageIcon("imgs/(this)game_o_empty2.png");
-			//	deleteCharacter.getImage().flush();
-			//	jj.setIcon(deleteCharacter);
-		//	}
-			*/
 	}
 }
 	class Exam2 extends Thread {
@@ -617,7 +577,7 @@ class QPlay extends JFrame implements ActionListener {
 		}
 		void timeSleep(){
 			try{
-				Thread.sleep(850);
+				Thread.sleep(950);
 			}catch(Exception e){}
 		}
 
@@ -647,6 +607,13 @@ class QPlay extends JFrame implements ActionListener {
 						ready_done.setEnabled(false);
 					}catch(IOException ie){}
 				} 
+				if(obj == exit) {
+					try{
+						dos.writeUTF("//Exit"+nickName);
+						dos.flush();
+					}catch(IOException ie){
+					}
+				}
 		}
 		//채팅 입력 요거!!! //-> 엔터쳤을때 메시지 내보내려면. KeyEvent를 걸어줘야 함!!!
 		public void keyReleased(KeyEvent e){ //무언가 실행을 했을때 메시지를 내보내야함

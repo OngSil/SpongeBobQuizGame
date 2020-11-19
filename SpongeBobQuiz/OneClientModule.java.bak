@@ -55,12 +55,14 @@ public class OneClientModule extends Thread {
 				filterMsg(msg);
 			}
 		}catch(IOException ie){
-			showSystemMsg("//Exit"+clientId);
+			//showSystemMsg("//Exit"+clientId);
 			qs.clientList.remove(this);
 			//qs.clientList.remove(clientId);
 			listClientId.remove(this);
-			closeAll();
+			//closeAll();
 			qs.textArea.append(clientId+"´Ô ÅðÀå!! (ÃÑÀÎ¿ø: "+qs.clientList.size()+"¸í)");
+			qs.textArea.append("clientList: "+qs.clientList);
+			
 
 			if(qs.clientList.isEmpty() == true){
 				try{
@@ -95,6 +97,9 @@ public class OneClientModule extends Thread {
 				qs.gameStart = true;
 				Exam ex = new Exam(); ex.start();
 			}
+		}else if(msg.startsWith("//Exit")){
+			String exitClient = msg.substring(6);
+			showSystemMsg("//ExitClient"+exitClient);
 		}
 	}
 
