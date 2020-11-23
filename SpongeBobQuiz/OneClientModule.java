@@ -69,7 +69,8 @@ public class OneClientModule extends Thread {
 					s.close(); System.exit(0);
 				}catch(IOException iee){} 
 			} 
-			showSystemMsg(clientId + "¥‘ ≈¿Â!");  
+			showSystemMsg(clientId + "¥‘ ≈¿Â!"); 
+			showSystemMsg("//ExitClient"+clientId);
 		}finally{
 			closeAll();
 		}
@@ -96,6 +97,8 @@ public class OneClientModule extends Thread {
 				//≈∏¿Ã∏” Ω√¿€
 				qs.gameStart = true;
 				Exam ex = new Exam(); ex.start();
+				myTimer myTimer = new myTimer();
+				myTimer.start();
 			}
 		}else if(msg.startsWith("//Exit")){
 			String exitClient = msg.substring(6);
@@ -190,6 +193,27 @@ public class OneClientModule extends Thread {
 			}
 			showSystemMsg("//Exam"+sb2);
 		}	
+	}
+	int sec = 10;
+	class myTimer extends Thread {
+		final long timeInterval = 1000;
+		
+		
+		public void run(){
+				while(sec>=0){
+					showSystemMsg("//Time"+"00:"+String.valueOf(sec));
+					sec--;
+					try{
+						Thread.sleep(timeInterval);
+					}catch(InterruptedException e){
+						e.printStackTrace();
+					}			
+					if(sec == 0){
+						showSystemMsg("//End"+"Time Out!∞‘¿” ¡æ∑·!");
+					}
+				}
+
+		}
 	}
 
 	public void closeAll(){
