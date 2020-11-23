@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.Timer;
+import java.util.TimerTask;
 import javafx.embed.swing.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -291,6 +293,10 @@ class QPlay extends JFrame implements ActionListener {
 				JOptionPane.PLAIN_MESSAGE, null);
 			if(select == 0){
 				System.exit(0);
+				Speak speak = new Speak();
+				speak.start();
+				//dos.writeUTF("//Exit"+nickName);
+				//dos.flush();
 			}
 		} 
 	}
@@ -345,6 +351,8 @@ class QPlay extends JFrame implements ActionListener {
 						String em = msg.substring(6);
 						Thread Exam2 = new Exam2(em);
 						Exam2.start();
+						//Thread MyTimer = new Thread();
+						//MyTimer.start();
 					} else if(msg.startsWith("//ExitClient")){ //나간 클라이언트 체크
 						exitClient = msg.substring(12);
 						deleteClientList(exitClient);
@@ -399,12 +407,17 @@ class QPlay extends JFrame implements ActionListener {
 							user3.setText("점수: "+score3);
 							user4.setText("점수: "+score4);
 						}
-						
-					
-
 					//	user3.setText("점수: "+score3);
 					//	user4.setText("점수: "+score4);  
-					}else{
+					}else if(msg.startsWith("//Time")){
+						String msg3 = msg.substring(6);
+						label_Timer.setText(msg3);
+						//System.out.println("Time!!!!!!!!!!!: "+msg3);
+					} else if(msg.startsWith("//End")){
+						String timeOut = msg.substring(5);
+						textArea.append(timeOut);
+						//System.out.println("????????///: "+msg3);
+					} else {
 						textArea.append(msg+"\n");
 						//tsp.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
 					}
@@ -583,6 +596,9 @@ class QPlay extends JFrame implements ActionListener {
 
 	}
 
+
+
+
 	class Speak extends Thread implements ActionListener, KeyListener {
 		Speak(){
 		}
@@ -607,13 +623,19 @@ class QPlay extends JFrame implements ActionListener {
 						ready_done.setEnabled(false);
 					}catch(IOException ie){}
 				} 
-				if(obj == exit) {
-					try{
-						dos.writeUTF("//Exit"+nickName);
-						dos.flush();
-					}catch(IOException ie){
+				if(obj == exit){
+					int select = JOptionPane.showConfirmDialog(
+						null, "게임 그만할거얌?", "게임 종료", 
+						JOptionPane.OK_CANCEL_OPTION, 
+						JOptionPane.PLAIN_MESSAGE, null);
+					if(select == 0){
+						System.exit(0);
+						try{
+							dos.writeUTF("//Exit"+nickName);
+							dos.flush();
+						}catch(IOException ie){}
 					}
-				}
+			}
 		}
 		//채팅 입력 요거!!! //-> 엔터쳤을때 메시지 내보내려면. KeyEvent를 걸어줘야 함!!!
 		public void keyReleased(KeyEvent e){ //무언가 실행을 했을때 메시지를 내보내야함
@@ -631,7 +653,5 @@ class QPlay extends JFrame implements ActionListener {
 		public void keyTyped(KeyEvent e){}
 		public void keyPressed(KeyEvent e){}
 	}
-//	public static void main(String[] args) {
-//		new QPlay(QMain qm);
-//	}
+
 }
