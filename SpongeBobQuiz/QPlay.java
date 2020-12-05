@@ -325,6 +325,10 @@ class QPlay extends JFrame implements ActionListener {
 			System.exit(0);
 		}
 	}
+
+	ArrayList<Thread> ThreadList = new ArrayList<Thread>();
+
+
 	class Listen extends Thread {
 		Listen(){
 		//	start();
@@ -350,8 +354,10 @@ class QPlay extends JFrame implements ActionListener {
 					} else if(msg.startsWith("//Exam")){
 						String em = msg.substring(6);
 						Thread Exam2 = new Exam2(em);
-						Exam2.start();
-						//Thread MyTimer = new Thread();
+						ThreadList.add(Exam2);
+						System.out.println("Exam2 ID: "+Exam2.getId()); //28
+						System.out.println("Current ID: "+Thread.currentThread().getId()); //24
+						Exam2.start();						//Thread MyTimer = new Thread();
 						//MyTimer.start();
 					} else if(msg.startsWith("//ExitClient")){ //나간 클라이언트 체크
 						exitClient = msg.substring(12);
@@ -416,6 +422,8 @@ class QPlay extends JFrame implements ActionListener {
 					} else if(msg.startsWith("//End")){
 						String timeOut = msg.substring(5);
 						textArea.append(timeOut);
+						stopExam();
+
 						//System.out.println("????????///: "+msg3);
 					} else {
 						textArea.append(msg+"\n");
@@ -542,14 +550,15 @@ class QPlay extends JFrame implements ActionListener {
 				}
 
 				int c = 0; int d = 0;
+				try{
 		//		if(round == 1){
-					q1.setText(quizList.get(c)); c++; timeSleep();
-					q2.setText(quizList.get(c)); c++; timeSleep();
-					q3.setText(quizList.get(c)); c++; timeSleep();
-					q4.setText(quizList.get(c)); c++; timeSleep();
-					q5.setText(quizList.get(c)); c++; timeSleep();
-					q6.setText(quizList.get(c)); c++; timeSleep();
-					quiz_board.setVisible(false);try{ Thread.sleep(1000); }catch(Exception e){};
+					q1.setText(quizList.get(c)); c++; Thread.sleep(950);//timeSleep();
+					q2.setText(quizList.get(c)); c++; Thread.sleep(950);//timeSleep();
+					q3.setText(quizList.get(c)); c++; Thread.sleep(950);//timeSleep();
+					q4.setText(quizList.get(c)); c++; Thread.sleep(950);//timeSleep();
+					q5.setText(quizList.get(c)); c++; Thread.sleep(950);//timeSleep();
+					q6.setText(quizList.get(c)); c++; Thread.sleep(950);//timeSleep();
+					quiz_board.setVisible(false);//try{ Thread.sleep(1000); }catch(Exception e){};
 					answer_board.setVisible(true);
 					answer_board.setText("정답: "+answerList.get(d)); timeSleep(); d++;
 					answer_board.setVisible(false);
@@ -565,7 +574,7 @@ class QPlay extends JFrame implements ActionListener {
 					q4.setText(quizList.get(c)); c++; timeSleep();
 					q5.setText(quizList.get(c)); c++; timeSleep();
 					q6.setText(quizList.get(c)); c++; timeSleep();
-					quiz_board.setVisible(false);try{ Thread.sleep(1000); }catch(Exception e){};
+					quiz_board.setVisible(false);//try{ Thread.sleep(1000); }catch(Exception e){};
 					answer_board.setVisible(true);
 					answer_board.setText("정답: "+answerList.get(d)); d++;
 					answer_board.setVisible(false);
@@ -581,23 +590,69 @@ class QPlay extends JFrame implements ActionListener {
 					q4.setText(quizList.get(c)); c++; timeSleep();
 					q5.setText(quizList.get(c)); c++; timeSleep();
 					q6.setText(quizList.get(c)); c++; timeSleep();
-					quiz_board.setVisible(false);try{ Thread.sleep(1000); }catch(Exception e){};
+					quiz_board.setVisible(false);//try{ Thread.sleep(1000); }catch(Exception e){};
+					answer_board.setVisible(true);
+					answer_board.setText("정답: "+answerList.get(d)); d++;
+
+										quiz_board.setVisible(true);
+					q1.setText(""); q2.setText(""); q3.setText("");
+					q4.setText(""); q5.setText(""); q6.setText("");
+
+					q1.setText(quizList.get(c)); c++; //timeSleep();
+					q2.setText(quizList.get(c)); c++; //timeSleep();
+					q3.setText(quizList.get(c)); c++; //timeSleep();
+					q4.setText(quizList.get(c)); c++; //timeSleep();
+					q5.setText(quizList.get(c)); c++; //timeSleep();
+					q6.setText(quizList.get(c)); c++; //timeSleep();
+					quiz_board.setVisible(false);//try{ Thread.sleep(1000); }catch(Exception e){};
 					answer_board.setVisible(true);
 					answer_board.setText("정답: "+answerList.get(d)); d++;
 				//	round++;
 			//	}
+				}catch(InterruptedException e){
+					ThreadList.get(0).interrupt();
+					answer_board.setText("");
+					answer_board.setText("게임이 종료되었습니다. 우승자: ");
+				}
+			}else if(gameStart = false){
+				stopExam();
 			}
 		}
 		void timeSleep(){
 			try{
 				Thread.sleep(950);
-			}catch(Exception e){}
+			}catch(InterruptedException e){
+				e.printStackTrace();
+				ThreadList.get(0).interrupt();
+				
+			}finally{
+				System.out.println("게임종료");
+				answer_board.setText("");
+				answer_board.setText("게임이 종료되었습니다. 우승자: ");
+				timeOut();
+			}	
 		}
-
 	}
 
-
-
+	public void stopExam(){
+		System.out.println(Thread.currentThread().getName());
+		try{
+			Thread.sleep(1000);
+		}catch(InterruptedException e){
+			e.printStackTrace();
+		}finally{
+			answer_board.setText("");
+			answer_board.setText("게임이 종료되었습니다. 우승자: ");
+		}
+		ThreadList.get(0).interrupt();
+	}
+	
+	public void timeOut(){
+			try{
+				dos.writeUTF("//TimeOut");
+				dos.flush();
+			}catch(IOException ie){}
+	}
 
 	class Speak extends Thread implements ActionListener, KeyListener {
 		Speak(){
@@ -609,6 +664,7 @@ class QPlay extends JFrame implements ActionListener {
 					dos.flush();
 				}catch(IOException ie){}
 		}
+
 		public void actionPerformed(ActionEvent e){
 			Object obj = e.getSource();
 				if(obj == ready){

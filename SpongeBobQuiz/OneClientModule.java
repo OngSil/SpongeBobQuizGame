@@ -76,9 +76,14 @@ public class OneClientModule extends Thread {
 		}
 	}
 	void filterMsg(String msg){
+		String answerWord = "";
 		if(msg.startsWith("//Chat")){
 			answerCheck(msg.substring(6).trim());
 			String msg2 = msg.substring(6);
+			if (msg2.contains(":")){
+				answerWord = msg2.substring(msg2.lastIndexOf(":")+1);
+				answerCheck(answerWord);
+			}
 			showSystemMsg(msg2);
 		}else if(msg.startsWith("//Answer")){
 			//answerCheck(msg.substring(8).trim());
@@ -103,6 +108,9 @@ public class OneClientModule extends Thread {
 		}else if(msg.startsWith("//Exit")){
 			String exitClient = msg.substring(6);
 			showSystemMsg("//ExitClient"+exitClient);
+		}else if(msg.startsWith("//TimeOut")){
+			//System.out.println("timeOut!!!!!!!!!!!!!!!!!!!!!!!");
+			//점수 계산해서 QPlay에 1등 쏴줘야 함!!!!
 		}
 	}
 
@@ -122,9 +130,9 @@ public class OneClientModule extends Thread {
 	
 	ArrayList<String> exList2 = new ArrayList<String>();
 	ArrayList<String> answerList2 = new ArrayList<String>();
-	void answerCheck(String msg){
-		String ansNick = msg.substring(0, msg.indexOf(" ")+1);
-		String ansStr = msg.substring(msg.lastIndexOf(" ")+1);
+	void answerCheck(String answerWord){
+		//String ansNick = msg.substring(0, msg.indexOf(" ")+1);
+		//String ansStr = msg.substring(msg.lastIndexOf(" ")+1);
 		BufferedReader br2;
 		String line3 = "";
 			try{
@@ -134,23 +142,22 @@ public class OneClientModule extends Thread {
 					exList2.add(line3);
 				}
 			}catch(IOException ie){}
-			//문제 리스트에서 7의배수 인덱스(정답)만 quizList에 담기
-			for(int j=1; j<exList2.size(); j++){
-				if( j%7 == 0 ){
-					answerList2.add(exList2.get(j-1));
-				} else if( j%7 != 0 ){
-					continue;
-				}
+
+			String realAnswer = exList2.get(6);
+			String answer = answerWord.substring(answerWord.lastIndexOf(":")+1);
+
+			String str = answer.trim();
+			System.out.println("str:"+str);
+			System.out.println("realAnswer:"+realAnswer);
+
+			if( str.intern() == realAnswer.intern() ) {
+				System.out.println("1111111111111111111111111");
+			} else {
+				System.out.println("여기 아니야");
+				//System.out.println("answerWord:"+answerWord);
+				//System.out.println("answer.trim():"+answerWord.trim());
 			}
-//answerList2.get(qs.round)
-			if( ansStr.trim().equals(answerList2.get(qs.round).trim()) ){
-					if( ansNick.trim().equals(this.clientId) ){ //QMain.nickName	
-					score++;
-					
-					qs.round++;
-				}	
-			}
-			scoreOutput(score);
+			//scoreOutput(score);
 			
 	}
 
@@ -197,7 +204,6 @@ public class OneClientModule extends Thread {
 	int sec = 10;
 	class myTimer extends Thread {
 		final long timeInterval = 1000;
-		
 		
 		public void run(){
 				while(sec>=0){
