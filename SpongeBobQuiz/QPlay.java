@@ -413,8 +413,8 @@ class QPlay extends JFrame implements ActionListener {
 							user3.setText("점수: "+score3);
 							user4.setText("점수: "+score4);
 						}
-					//	user3.setText("점수: "+score3);
-					//	user4.setText("점수: "+score4);  
+						user3.setText("점수: "+score3);
+						user4.setText("점수: "+score4);  
 					}else if(msg.startsWith("//Time")){
 						String msg3 = msg.substring(6);
 						label_Timer.setText(msg3);

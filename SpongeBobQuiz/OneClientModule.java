@@ -80,10 +80,7 @@ public class OneClientModule extends Thread {
 		if(msg.startsWith("//Chat")){
 			answerCheck(msg.substring(6).trim());
 			String msg2 = msg.substring(6);
-			if (msg2.contains(":")){
-				answerWord = msg2.substring(msg2.lastIndexOf(":")+1);
-				answerCheck(answerWord);
-			}
+
 			showSystemMsg(msg2);
 		}else if(msg.startsWith("//Answer")){
 			//answerCheck(msg.substring(8).trim());
@@ -143,19 +140,32 @@ public class OneClientModule extends Thread {
 				}
 			}catch(IOException ie){}
 
-			String realAnswer = exList2.get(6);
-			String answer = answerWord.substring(answerWord.lastIndexOf(":")+1);
+			String realAnswer = exList2.get(6); //정답 list에 있는 정답
 
-			String str = answer.trim();
-			System.out.println("str:"+str);
-			System.out.println("realAnswer:"+realAnswer);
+			//입력한 답
+			String answer = answerWord.substring(answerWord.lastIndexOf(":") + 1);
+			String str = answer.trim(); //띄어쓰기 제거
+			
+			//정답자 이름 (":" 제거)
+			String who_answer = answerWord.substring(0, answerWord.indexOf(":") + 1);
+			String answer_name = who_answer.trim().replaceAll(":","").trim();
+			
+			HashMap<String, Integer> name_score = new HashMap<String, Integer>();
+			int score = 0;
 
-			if( str.intern() == realAnswer.intern() ) {
-				System.out.println("1111111111111111111111111");
-			} else {
-				System.out.println("여기 아니야");
-				//System.out.println("answerWord:"+answerWord);
-				//System.out.println("answer.trim():"+answerWord.trim());
+			if( str.equals(realAnswer.trim()) ) { //정답 맞췄을때
+				System.out.println("정답입니다 :D");
+				System.out.println("who_answer: "+who_answer);
+				System.out.println("answer_name: "+answer_name);
+				score++;
+				name_score.put(answer_name, score);
+			} 
+
+			//HashMap에 정답자, 점수 넣기
+			for(String key : name_score.keySet()){
+				int value = name_score.get(key);
+				System.out.println(key+"님 "+value+"점 획득!");
+				
 			}
 			//scoreOutput(score);
 			
@@ -216,6 +226,8 @@ public class OneClientModule extends Thread {
 					}			
 					if(sec == 0){
 						showSystemMsg("//End"+"Time Out!게임 종료!");
+						//System.out.println("Time Out!");
+
 					}
 				}
 
