@@ -395,8 +395,7 @@ class QPlay extends JFrame implements ActionListener {
 								if(clientId.equals(answer_name)){
 									int clientNum = realClientlist.get(clientId); //자리 수 뽑아서 점수 올려준다
 									if (clientNum == 0) {
-										user1.setText("점수: "+scoreStr);
-										user2.setText("점수: "+"0");
+										user1.setText("점수: "+"0");
 									} else if (clientNum == 1) {
 										user1.setText("점수: "+"0");
 										user2.setText("점수: "+scoreStr);

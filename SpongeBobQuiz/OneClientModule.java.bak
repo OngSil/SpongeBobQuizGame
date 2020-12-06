@@ -78,9 +78,10 @@ public class OneClientModule extends Thread {
 	void filterMsg(String msg){
 		String answerWord = "";
 		if(msg.startsWith("//Chat")){
-			String msg2 = msg.substring(6);
-			showSystemMsg(msg2);
 			answerCheck(msg.substring(6).trim());
+			String msg2 = msg.substring(6);
+
+			showSystemMsg(msg2);
 		}else if(msg.startsWith("//Answer")){
 			//answerCheck(msg.substring(8).trim());
 		}else if(msg.startsWith("//Ready")){
