@@ -105,8 +105,10 @@ public class OneClientModule extends Thread {
 			String exitClient = msg.substring(6);
 			showSystemMsg("//ExitClient"+exitClient);
 		}else if(msg.startsWith("//TimeOut")){
-			//System.out.println("timeOut!!!!!!!!!!!!!!!!!!!!!!!");
-			//점수 계산해서 QPlay에 1등 쏴줘야 함!!!!
+		
+		}else if(msg.startsWith("//ClientList")){
+			String ClientList = msg.substring(12);
+			scoreOutput(ClientList);
 		}
 	}
 
@@ -132,14 +134,14 @@ public class OneClientModule extends Thread {
 		BufferedReader br2;
 		String line3 = "";
 			try{
-				FileReader fr = new FileReader("imgs/스폰지밥.txt");
+				FileReader fr = new FileReader("imgs/스폰지밥Answer.txt");
 				br2 = new BufferedReader(fr);
 				while((line3 = br2.readLine()) != null){
-					exList2.add(line3);
+					answerList2.add(line3);
 				}
 			}catch(IOException ie){}
 
-			String realAnswer = exList2.get(6); //정답 list에 있는 정답
+			//String realAnswer = exList2.get(6); //정답 list에 있는 정답
 
 			//입력한 답
 			String answer = answerWord.substring(answerWord.lastIndexOf(":") + 1);
@@ -151,24 +153,45 @@ public class OneClientModule extends Thread {
 			
 			HashMap<String, Integer> name_score = new HashMap<String, Integer>();
 			int score = 0;
+			
+			for(String answer_word : answerList2){
+				if( str.equals(answer_word.trim()) ) { //정답 맞췄을때
+					System.out.println("정답입니다 :D");
+					System.out.println("who_answer: "+who_answer);
+					System.out.println("answer_name: "+answer_name);
+					score++;
+					name_score.put(answer_name, score);
+				} 				
+			}
+			
+	}
 
-			if( str.equals(realAnswer.trim()) ) { //정답 맞췄을때
-				System.out.println("정답입니다 :D");
-				System.out.println("who_answer: "+who_answer);
-				System.out.println("answer_name: "+answer_name);
-				score++;
-				name_score.put(answer_name, score);
-			} 
+	void scoreOutput(String player){
+		
+		//player 이름, index 분해 - 1. {} 없애기
+		String playername_index1 = player.substring(1);
+		String playername_index2 = playername_index1.substring(0, playername_index1.length()-1).trim();
+		
+		//player 이름, index 분해 - 2. , 기준으로 나눠서 담기
+		int idx = playername_index2.indexOf(",");
+		String player2 = playername_index2.substring(0, idx+1).trim().replaceAll(",","");
+		String player1 = playername_index2.substring(idx+1);
+
+		//System.out.println("playername_index2: "+playername_index2);
+		System.out.println("player1: "+player1);
+		System.out.println("player2: "+player2);
+
+		//player 이름, index 분해 - 2. = 기준으로 나눠서 hashmap에 담기
+
 
 			//HashMap에 정답자, 점수 넣기
-			for(String key : name_score.keySet()){
-				int value = name_score.get(key);
+			/*for(String key : real_playerList.keySet()){
+				int value = real_playerList.get(key);
 				System.out.println(key+"님 "+value+"점 획득!");
-				showSystemMsg(key+"님 "+value+"점 획득!");
-				showSystemMsg("//Score"+key+"/"+value);
-			}
-			//scoreOutput(score);
-			
+				//showSystemMsg(key+"님 "+value+"점 획득!");
+				//showSystemMsg("//Score"+key+"/"+value);
+			}*/
+	
 	}
 
 	

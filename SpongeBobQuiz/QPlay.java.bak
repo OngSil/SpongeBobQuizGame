@@ -373,53 +373,45 @@ class QPlay extends JFrame implements ActionListener {
 						String answer_name = msg3.split("/")[0];
 						String scoreStr = msg3.split("/")[1];
 
-						if(realClientlist.size() == 1) {
-							//HashMap에 정답자, 점수 넣기
-							for(String clientId : realClientlist.keySet()){
-								if(clientId.equals(answer_name)){
-									int clientNum = realClientlist.get(clientId); //자리 수 뽑아서 점수 올려준다
-									if (clientNum == 0) {
-										user1.setText("점수: "+scoreStr);
-									} else if (clientNum == 1) {
-										user2.setText("점수: "+"0");
-									} else if (clientNum == 2) {
-										user3.setText("점수: "+"0");
-									} else {
-										user4.setText("점수: "+"0");
-									}
-								}
-							}	
+						int user1_score = 0;
+						int user2_score = 0;
+						int user3_score = 0;
+						int user4_score = 0;
 
-						} else if (realClientlist.size() == 2 ) {
-							for(String clientId : realClientlist.keySet()){
+						String user1_scoreStr = "";
+						String user2_scoreStr = "";
+						String user3_scoreStr = "";
+						String user4_scoreStr = "";
+
+						for(String clientId : realClientlist.keySet()){
 								if(clientId.equals(answer_name)){
 									int clientNum = realClientlist.get(clientId); //자리 수 뽑아서 점수 올려준다
 									if (clientNum == 0) {
-										user1.setText("점수: "+"0");
+										user1_score++;
 									} else if (clientNum == 1) {
-										user1.setText("점수: "+"0");
-										user2.setText("점수: "+scoreStr);
+										user2_score++;
 									} else if (clientNum == 2) {
-										user1.setText("점수: "+"0");
-										user2.setText("점수: "+"0");
-										user3.setText("점수: "+scoreStr);
+										user3_score++;
 									} else {
-										user1.setText("점수: "+"0");
-										user2.setText("점수: "+"0");
-										user3.setText("점수: "+"0");
-										user4.setText("점수: "+scoreStr);
+										user4_score++;
 									}
 								}
-							}
+						}
+
+						if(realClientlist.size() == 1) {
+							user1.setText("점수: "+user1_score);
+						} else if (realClientlist.size() == 2 ) {
+							user1.setText("점수: "+user1_score);
+							user2.setText("점수: "+user2_score);
 						} else if (realClientlist.size() == 3 ) {
-							//user1.setText("점수: "+scoreStr);
-							//user2.setText("점수: "+scoreStr);
-							//user3.setText("점수: "+scoreStr);
+							user1.setText("점수: "+user1_score);
+							user2.setText("점수: "+user2_score);
+							user3.setText("점수: "+user3_score);
 						} else if (realClientlist.size() == 4 ) {
-							//user1.setText("점수: "+scoreStr);
-							//user2.setText("점수: "+scoreStr);
-							//user3.setText("점수: "+scoreStr);
-							//user3.setText("점수: "+scoreStr);
+							user1.setText("점수: "+user1_score);
+							user2.setText("점수: "+user2_score);
+							user3.setText("점수: "+user3_score);
+							user4.setText("점수: "+user4_score);
 						}
 						//if(listSize.trim().equals("2")){
 							/*score = nam.substring(0, nam.indexOf("/")); //-> 0~1/
@@ -496,6 +488,7 @@ class QPlay extends JFrame implements ActionListener {
 				character.getImage().flush();
 				sp.setIcon(character);
 				realClientlist.put(playerName,0);
+				setClientList(realClientlist);
 		//		deleteClientList();
 			}else if(Integer.parseInt(playerIdx) == 1){
 				id2.setText(playerName);
@@ -504,6 +497,7 @@ class QPlay extends JFrame implements ActionListener {
 				character.getImage().flush();
 				dd.setIcon(character);
 				realClientlist.put(playerName,1);
+				setClientList(realClientlist);
 			//	deleteClientList();
 			}else if(Integer.parseInt(playerIdx) == 2){
 				id3.setText(playerName);
@@ -512,6 +506,7 @@ class QPlay extends JFrame implements ActionListener {
 				character.getImage().flush();
 				da.setIcon(character);
 				realClientlist.put(playerName,2);
+				setClientList(realClientlist);
 			//	deleteClientList();
 			}else if(Integer.parseInt(playerIdx) == 3){
 				id4.setText(playerName);
@@ -520,8 +515,16 @@ class QPlay extends JFrame implements ActionListener {
 				character.getImage().flush();
 				jj.setIcon(character);
 				realClientlist.put(playerName,3);
+				setClientList(realClientlist);
 			//	deleteClientList();
 			}
+		}
+
+		public void setClientList(HashMap<String, Integer> realClientlist){
+			try{
+				dos.writeUTF("//ClientList");
+				dos.flush();
+			}catch(IOException ie){}
 		}
 
 
